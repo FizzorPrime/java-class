@@ -9,14 +9,14 @@ import java.awt.event.*;
 public class Window {
 	
 	//creating all of the different objects meant to be used by the constructor
-	JFrame f;
-	JPanel p;
-	JButton b1;
-	JButton help;
-	String[] operations = {"+", "-", "*", "/", "%", "^", "sqrt"};
-	JComboBox combo = new JComboBox(operations);
-	JLabel lab;
-	JTextField textfield1, textfield2;
+	JFrame mainFrame;
+	JPanel mainPanel;
+	JButton equalsButton;
+	JButton helpButton;
+	String[] operationList = {"+", "-", "*", "/", "%", "^", "sqrt"};
+	JComboBox operationBox = new JComboBox(operationList);
+	JLabel resultsLabel;
+	JTextField textFieldX, textFieldY;
 	
 	/**
 	 * Constructor that builds the gui system and then calls for the calculations
@@ -24,42 +24,42 @@ public class Window {
 	 */
 	public Window() {
 		//creates the window the application displays in
-		f = new JFrame("Calculator");
+		mainFrame = new JFrame("Calculator");
 		//creates the panel that aligns all of the components together
-		p = new JPanel(new GridBagLayout());
-		p.setBackground(Color.white);
+		mainPanel = new JPanel(new GridBagLayout());
+		mainPanel.setBackground(Color.white);
 		//creates the two input fields for the calculations
-		textfield1 = new JTextField("Input 1",7);
-	    textfield2 = new JTextField("Input 2",7);
+		textFieldX = new JTextField("Input 1",7);
+	    textFieldY = new JTextField("Input 2",7);
 	    //creates the equals button that calls the calculator to begin
-		b1 = new JButton("=");
-		b1.addActionListener(new ActionListener() {
+	    equalsButton = new JButton("=");
+	    equalsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				calculate(textfield1.getText(), combo, textfield2.getText());
+				calculate(textFieldX.getText(), operationBox, textFieldY.getText());
 			}
 		});
 		//creates the help button for some pointers
-		help = new JButton("Help");
-		help.addActionListener(new ActionListener() {
+		helpButton = new JButton("Help");
+		helpButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				displayHelp();
 			}
 		});
 		//creates the display field for the output
-		lab = new JLabel("Results");
+		resultsLabel = new JLabel("Results");
 		
 		//appends all the objects to the panel and then the frame to be displayed
-		p.add(help);
-		p.add(textfield1);
-		p.add(combo);
-	    p.add(textfield2);
-		p.add(b1);
-		p.add(lab);
-		f.add(p);
+		mainPanel.add(helpButton);
+		mainPanel.add(textFieldX);
+		mainPanel.add(operationBox);
+		mainPanel.add(textFieldY);
+		mainPanel.add(equalsButton);
+		mainPanel.add(resultsLabel);
+		mainFrame.add(mainPanel);
 		//sets the frame to be visible, a certain size and to close when the 'x' button is pressed
-		f.setVisible(true);
-		f.setSize(600,200);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setVisible(true);
+		mainFrame.setSize(600,200);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	/**
@@ -69,32 +69,54 @@ public class Window {
 	 * @param combo JComboBox: the operation type to determine what type of calculation to make
 	 * @param y String: contains the second input value to be converted to a double
 	 */
-	public void calculate(String x, JComboBox combo, String y) {
+	public void calculate(String x, JComboBox operationBox, String y) {
 		//converts the combo's value to a string
-		String modifier = combo.getSelectedItem().toString();
+		String modifier = operationBox.getSelectedItem().toString();
 		try {
 			//migrates the value of the two inputs into doubles and checks to see if the value is PI
 			double a, b;
-			if(x.replaceAll("\\s", "").equals("PI")) { a = Math.PI; }
-			else { a = Double.parseDouble(x); }
-			if(y.replaceAll("\\s", "").equals("PI")) { b =Math.PI; }
-			else{ b = Double.parseDouble(y); }
+			if (x.replaceAll("\\s", "").equals("PI")) { 
+				a = Math.PI; 
+			}
+			else { 
+				a = Double.parseDouble(x); 
+			}
+			
+			if (y.replaceAll("\\s", "").equals("PI")) { 
+				b =Math.PI; 
+			}
+			else { 
+				b = Double.parseDouble(y); 
+			}
+			
 			//determines which operation to perform and executes
-			if     (modifier == "+") { lab.setText(Double.toString(a+b)); }
-			else if(modifier == "-") { lab.setText(Double.toString(a-b)); }
-			else if(modifier == "*") { lab.setText(Double.toString(a*b)); }
-			else if(modifier == "/") { lab.setText(Double.toString(a/b)); }
-			else if(modifier == "%") { lab.setText(Double.toString(a%b)); }
-			else if(modifier == "^") { lab.setText(Double.toString(Math.pow(a,b))); }
-			else if(modifier == "sqrt") {
+			if (modifier == "+") { 
+				resultsLabel.setText(Double.toString(a+b)); 
+			}
+			else if (modifier == "-") { 
+				resultsLabel.setText(Double.toString(a-b)); 
+			}
+			else if (modifier == "*") { 
+				resultsLabel.setText(Double.toString(a*b)); 
+			}
+			else if (modifier == "/") { 
+				resultsLabel.setText(Double.toString(a/b)); 
+			}
+			else if (modifier == "%") { 
+				resultsLabel.setText(Double.toString(a%b)); 
+			}
+			else if (modifier == "^") { 
+				resultsLabel.setText(Double.toString(Math.pow(a,b))); 
+			}
+			else if (modifier == "sqrt") {
 				//converts the sqrt value to a reversed version of itself to produce the same type of calculation as a root
 				b = 1/b;
-				lab.setText(Double.toString(Math.pow(a,b)));
+				resultsLabel.setText(Double.toString(Math.pow(a,b)));
 			}
 		} 
 		//catches an exception if the input was not a number to be calculated
 		catch (NumberFormatException e) {
-			lab.setText("Invalid input");
+			resultsLabel.setText("Invalid input");
 		}
 	}
 	
